@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | The Codency</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+</head>
+<body>
+    
+    <!-- Particle Background -->
+    <div class="particles-container"></div>
+
+    <div data-scroll-container>
+    
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="container">
+            <div class="nav-inner">
+                <a href="index.html" class="logo">
+                    <div class="logo-mark">C</div>
+                    <div class="logo-text">
+                        <span class="logo-main">The Codency</span>
+                        <span class="logo-sub">Digital Architects</span>
+                    </div>
+                </a>
+                
+                <div class="nav-menu">
+                    <ul class="nav-list">
+                        <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+                        <li class="nav-item"><a href="index.html#about" class="nav-link">Our Story</a></li>
+                        <li class="nav-item"><a href="index.html#services" class="nav-link">Expertise</a></li>
+                        <li class="nav-item"><a href="index.html#work" class="nav-link">Spotlight</a></li>
+                        <li class="nav-item"><a href="projects.html" class="nav-link active">Portfolio</a></li>
+                        <li class="nav-item"><a href="index.html#contact" class="nav-link">Connect</a></li>
+                    </ul>
+                    
+                    <div class="nav-actions">
+                        <a href="index.html#contact" class="btn btn-primary btn-small">Start Project</a>
+                        <div class="theme-toggle">
+                            <i class="fas fa-sun"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="nav-toggle" id="navToggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Projects Hero -->
+    <section class="projects-hero">
+        <div class="container">
+            <div class="projects-header">
+                <h6 class="section-label">Our Complete Portfolio</h6>
+                <h1 class="section-title">Every Project Tells a Story</h1>
+                <p class="section-subtitle">
+                    Dive into our complete collection of work. Each project represents a unique challenge, creative solution, and happy client.
+                </p>
+                <div class="project-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="totalProjects">0</div>
+                        <div class="stat-label">Projects Completed</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Industries</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">4</div>
+                        <div class="stat-label">Years of Excellence</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Container -->
+    <section class="projects-container">
+        <div class="container">
+            <!-- Projects Controls -->
+            <div class="projects-controls">
+                <div class="projects-filter">
+                    <button class="filter-btn active" data-filter="all">All Projects</button>
+                    <button class="filter-btn" data-filter="web">Web Platforms</button>
+                    <button class="filter-btn" data-filter="mobile">Mobile Apps</button>
+                    <button class="filter-btn" data-filter="design">Design Systems</button>
+                    <button class="filter-btn" data-filter="ecommerce">E-commerce</button>
+                </div>
+                
+                <div class="projects-sort">
+                    <select id="sortSelect">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="name">Alphabetical</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Projects Grid -->
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Projects loaded from projects.js -->
+            </div>
+            
+            <!-- Projects Pagination -->
+            <div class="projects-pagination">
+                <button class="pagination-btn pagination-prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div class="pagination-numbers">
+                    <span class="pagination-number active">1</span>
+                    <span class="pagination-number">2</span>
+                    <span class="pagination-number">3</span>
+                </div>
+                
+                <button class="pagination-btn pagination-next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section contact" style="background: var(--light-gray); padding: 80px 0;">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Ready to Start Your Project?</h2>
+                <p class="section-subtitle">
+                    Inspired by what you see? Let's create something amazing together.
+                </p>
+                <a href="index.html#contact" class="btn btn-primary btn-large" style="margin-top: 40px;">
+                    <span>Start a Conversation</span>
+                    <i class="fas fa-comment"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-main">
+                    <div class="footer-logo">
+                        <a href="index.html" class="logo">
+                            <div class="logo-mark">C</div>
+                            <div class="logo-text">
+                                <span class="logo-main">The Codency</span>
+                                <span class="logo-sub">Digital Architects</span>
+                            </div>
+                        </a>
+                        <p class="footer-tagline">Building digital experiences that make people smile (and businesses grow).</p>
+                    </div>
+                    
+                    <div class="footer-nav">
+                        <div class="footer-column">
+                            <h4>Explore</h4>
+                            <ul>
+                                <li><a href="index.html">Home</a></li>
+                                <li><a href="index.html#about">Our Story</a></li>
+                                <li><a href="index.html#services">Expertise</a></li>
+                                <li><a href="index.html#work">Spotlight</a></li>
+                                <li><a href="projects.html">Portfolio</a></li>
+                            </ul>
+                        </div>
+                        
+                        <div class="footer-column">
+                            <h4>Connect</h4>
+                            <ul>
+                                <li><a href="index.html#contact">Start a Project</a></li>
+                                <li><a href="mailto:hello@thecodency.com">Email Us</a></li>
+                                <li><a href="#">LinkedIn</a></li>
+                                <li><a href="#">Twitter</a></li>
+                                <li><a href="#">Instagram</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-bottom">
+                    <div class="footer-copyright">
+                        <p>&copy; <span id="currentYear"></span> The Codency. All rights reserved. Made with <i class="fas fa-heart"></i> and probably too much coffee.</p>
+                    </div>
+                    
+                    <div class="footer-legal">
+                        <a href="#">Privacy Policy</a>
+                        <span>•</span>
+                        <a href="#">Terms of Service</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="projects.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
