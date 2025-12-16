@@ -3,206 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio | The Codency</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+    <title>Work | The Codency</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            black: '#0a0a0a',
+                            dark: '#1c1c1c',
+                            gray: '#888888',
+                            light: '#f4f4f5',
+                            white: '#ffffff',
+                            accent: '#4f46e5'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4f4f5; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+        body { background-color: #f4f4f5; cursor: default; }
+        .image-hover-zoom { overflow: hidden; }
+        .image-hover-zoom img { transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .image-hover-zoom:hover img { transform: scale(1.05); }
+    </style>
 </head>
 <body>
-    
-    <!-- Particle Background -->
-    <div class="particles-container"></div>
+    <div id="root"></div>
 
-    <div data-scroll-container>
-    
-    <!-- Navigation -->
-    <nav class="nav" id="nav">
-        <div class="container">
-            <div class="nav-inner">
-                <a href="index.html" class="logo">
-                    <div class="logo-mark">C</div>
-                    <div class="logo-text">
-                        <span class="logo-main">The Codency</span>
-                        <span class="logo-sub">Digital Architects</span>
-                    </div>
-                </a>
-                
-                <div class="nav-menu">
-                    <ul class="nav-list">
-                        <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
-                        <li class="nav-item"><a href="index.html#about" class="nav-link">Our Story</a></li>
-                        <li class="nav-item"><a href="index.html#services" class="nav-link">Expertise</a></li>
-                        <li class="nav-item"><a href="index.html#work" class="nav-link">Spotlight</a></li>
-                        <li class="nav-item"><a href="projects.html" class="nav-link active">Portfolio</a></li>
-                        <li class="nav-item"><a href="index.html#contact" class="nav-link">Connect</a></li>
-                    </ul>
-                    
-                    <div class="nav-actions">
-                        <a href="index.html#contact" class="btn btn-primary btn-small">Start Project</a>
-                        <div class="theme-toggle">
-                            <i class="fas fa-sun"></i>
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+        const { motion, AnimatePresence, useScroll, useSpring } = window.Motion;
+
+        // --- ICONS (Inline SVG to prevent errors) ---
+        const Icon = ({ children, size = 24, className = "" }) => (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+                {children}
+            </svg>
+        );
+
+        const Icons = {
+            ArrowRight: (props) => <Icon {...props}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></Icon>,
+            ArrowUpRight: (props) => <Icon {...props}><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></Icon>,
+            X: (props) => <Icon {...props}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></Icon>,
+            Github: (props) => <Icon {...props}><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></Icon>,
+            Twitter: (props) => <Icon {...props}><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></Icon>,
+            Filter: (props) => <Icon {...props}><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></Icon>
+        };
+
+        // --- DATA ---
+        // Expanded project list for the full page
+        const PROJECTS = [
+            {
+                id: 1,
+                name: "Velox Finance",
+                category: "FinTech",
+                platform: "Web Application",
+                year: "2024",
+                thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+                description: "A high-frequency trading dashboard redesign focusing on data visualization speed and cognitive load reduction.",
+                problem: "Laggy data rendering costing traders millions.",
+                solution: "WebGL rendering engine with React concurrency.",
+                outcome: "Reduced latency to <16ms.",
+                tech: ["React", "WebGL", "Node.js"]
+            },
+            {
+                id: 2,
+                name: "Aura Health",
+                category: "Healthcare",
+                platform: "Mobile App",
+                year: "2023",
+                thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop",
+                description: "AI-driven wellness companion adapting to user biometrics.",
+                problem: "Generic health apps lacked personalization.",
+                solution: "Wearable API integration + AI plan generation.",
+                outcome: "500k Downloads in Q1.",
+                tech: ["Flutter", "Python AI", "Firebase"]
+            },
+            {
+                id: 3,
+                name: "Nexus Supply",
+                category: "Logistics",
+                platform: "SaaS",
+                year: "2025",
+                thumbnail: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop",
+                description: "Enterprise supply chain management with predictive analysis.",
+                problem: "15% stock wastage due to fragmentation.",
+                solution: "Unified ledger with ML prediction.",
+                outcome: "Wastage cut to 2%.",
+                tech: ["Next.js", "PostgreSQL", "AWS"]
+            },
+            {
+                id: 4,
+                name: "Lumina Art",
+                category: "E-Commerce",
+                platform: "Web Experience",
+                year: "2024",
+                thumbnail: "https://images.unsplash.com/photo-1507643179173-617d6a7982a2?q=80&w=1976&auto=format&fit=crop",
+                description: "Immersive 3D gallery for high-end digital art.",
+                problem: "Online art buying felt flat.",
+                solution: "Three.js virtual gallery in-browser.",
+                outcome: "AOV increased by 200%.",
+                tech: ["Three.js", "R3F", "Sanity"]
+            },
+            {
+                id: 5,
+                name: "Onyx Banking",
+                category: "FinTech",
+                platform: "Mobile App",
+                year: "2023",
+                thumbnail: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=1470&auto=format&fit=crop",
+                description: "Neo-banking app for the ultra-wealthy.",
+                problem: "Traditional banking apps were cluttered.",
+                solution: "Minimalist, gesture-based interface.",
+                outcome: "Awarded Best UI 2023.",
+                tech: ["Swift", "Kotlin", "SecureCore"]
+            },
+            {
+                id: 6,
+                name: "EcoTrack",
+                category: "Logistics",
+                platform: "IoT Dashboard",
+                year: "2024",
+                thumbnail: "https://images.unsplash.com/photo-1492447273231-0f8fecec1e3a?q=80&w=1470&auto=format&fit=crop",
+                description: "Real-time carbon footprint tracking for fleets.",
+                problem: "Lack of visibility into fleet emissions.",
+                solution: "IoT sensor integration visualization.",
+                outcome: "Clients reduced emissions by 18%.",
+                tech: ["Vue.js", "D3.js", "Go"]
+            }
+        ];
+
+        const CATEGORIES = ["All", "FinTech", "Healthcare", "Logistics", "E-Commerce"];
+
+        // --- COMPONENTS ---
+
+        const Cursor = () => {
+            const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+            useEffect(() => {
+                const updateMousePosition = e => setMousePosition({ x: e.clientX, y: e.clientY });
+                window.addEventListener('mousemove', updateMousePosition);
+                return () => window.removeEventListener('mousemove', updateMousePosition);
+            }, []);
+
+            return (
+                <motion.div
+                    className="fixed top-0 left-0 w-6 h-6 border border-brand-black rounded-full pointer-events-none z-[100] hidden md:block mix-blend-difference"
+                    animate={{ x: mousePosition.x - 12, y: mousePosition.y - 12 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 28 }}
+                />
+            );
+        };
+
+        const ProjectModal = ({ project, onClose }) => {
+            if (!project) return null;
+            return (
+                <motion.div 
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-50 bg-[#f4f4f5] overflow-y-auto"
+                >
+                    <button onClick={onClose} className="fixed top-8 right-8 z-50 p-4 rounded-full bg-white shadow-lg hover:scale-110 transition-transform"><Icons.X size={24} /></button>
+                    <motion.div 
+                        initial={{ scale: 1.1, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.8, ease: "circOut" }}
+                        className="w-full h-[60vh] relative overflow-hidden"
+                    >
+                        <img src={project.thumbnail} className="w-full h-full object-cover" alt={project.name} />
+                        <div className="absolute inset-0 bg-black/20"></div>
+                        <div className="absolute bottom-10 left-4 md:left-20 text-white">
+                            <h1 className="text-5xl md:text-8xl font-bold font-sans tracking-tighter">{project.name}</h1>
+                            <p className="text-xl md:text-2xl mt-2 font-light">{project.category} — {project.year}</p>
                         </div>
-                    </div>
-                </div>
-                
-                <button class="nav-toggle" id="navToggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Projects Hero -->
-    <section class="projects-hero">
-        <div class="container">
-            <div class="projects-header">
-                <h6 class="section-label">Our Complete Portfolio</h6>
-                <h1 class="section-title">Every Project Tells a Story</h1>
-                <p class="section-subtitle">
-                    Dive into our complete collection of work. Each project represents a unique challenge, creative solution, and happy client.
-                </p>
-                <div class="project-stats">
-                    <div class="stat">
-                        <div class="stat-value" id="totalProjects">0</div>
-                        <div class="stat-label">Projects Completed</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value">5</div>
-                        <div class="stat-label">Industries</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value">4</div>
-                        <div class="stat-label">Years of Excellence</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Container -->
-    <section class="projects-container">
-        <div class="container">
-            <!-- Projects Controls -->
-            <div class="projects-controls">
-                <div class="projects-filter">
-                    <button class="filter-btn active" data-filter="all">All Projects</button>
-                    <button class="filter-btn" data-filter="web">Web Platforms</button>
-                    <button class="filter-btn" data-filter="mobile">Mobile Apps</button>
-                    <button class="filter-btn" data-filter="design">Design Systems</button>
-                    <button class="filter-btn" data-filter="ecommerce">E-commerce</button>
-                </div>
-                
-                <div class="projects-sort">
-                    <select id="sortSelect">
-                        <option value="newest">Newest First</option>
-                        <option value="oldest">Oldest First</option>
-                        <option value="name">Alphabetical</option>
-                    </select>
-                </div>
-            </div>
-            
-            <!-- Projects Grid -->
-            <div class="projects-grid" id="projectsGrid">
-                <!-- Projects loaded from projects.js -->
-            </div>
-            
-            <!-- Projects Pagination -->
-            <div class="projects-pagination">
-                <button class="pagination-btn pagination-prev">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                
-                <div class="pagination-numbers">
-                    <span class="pagination-number active">1</span>
-                    <span class="pagination-number">2</span>
-                    <span class="pagination-number">3</span>
-                </div>
-                
-                <button class="pagination-btn pagination-next">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="section contact" style="background: var(--light-gray); padding: 80px 0;">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Ready to Start Your Project?</h2>
-                <p class="section-subtitle">
-                    Inspired by what you see? Let's create something amazing together.
-                </p>
-                <a href="index.html#contact" class="btn btn-primary btn-large" style="margin-top: 40px;">
-                    <span>Start a Conversation</span>
-                    <i class="fas fa-comment"></i>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-main">
-                    <div class="footer-logo">
-                        <a href="index.html" class="logo">
-                            <div class="logo-mark">C</div>
-                            <div class="logo-text">
-                                <span class="logo-main">The Codency</span>
-                                <span class="logo-sub">Digital Architects</span>
+                    </motion.div>
+                    <div className="max-w-5xl mx-auto px-6 py-20">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                            <div className="md:col-span-1">
+                                <h3 className="text-sm font-bold uppercase tracking-widest text-brand-gray mb-4">Technologies</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {project.tech.map(t => <span key={t} className="px-3 py-1 border border-brand-gray/30 rounded-full text-sm">{t}</span>)}
+                                </div>
                             </div>
-                        </a>
-                        <p class="footer-tagline">Building digital experiences that make people smile (and businesses grow).</p>
-                    </div>
-                    
-                    <div class="footer-nav">
-                        <div class="footer-column">
-                            <h4>Explore</h4>
-                            <ul>
-                                <li><a href="index.html">Home</a></li>
-                                <li><a href="index.html#about">Our Story</a></li>
-                                <li><a href="index.html#services">Expertise</a></li>
-                                <li><a href="index.html#work">Spotlight</a></li>
-                                <li><a href="projects.html">Portfolio</a></li>
-                            </ul>
-                        </div>
-                        
-                        <div class="footer-column">
-                            <h4>Connect</h4>
-                            <ul>
-                                <li><a href="index.html#contact">Start a Project</a></li>
-                                <li><a href="mailto:hello@thecodency.com">Email Us</a></li>
-                                <li><a href="#">LinkedIn</a></li>
-                                <li><a href="#">Twitter</a></li>
-                                <li><a href="#">Instagram</a></li>
-                            </ul>
+                            <div className="md:col-span-2 space-y-8">
+                                <h3 className="text-3xl font-bold">Overview</h3>
+                                <p className="text-xl text-brand-dark leading-relaxed font-light">{project.description}</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                                    <div className="bg-white p-6 border-l-2 border-brand-black"><h4 className="font-bold mb-2">Problem</h4><p className="text-brand-gray">{project.problem}</p></div>
+                                    <div className="bg-brand-black text-white p-6 border-l-2 border-brand-accent"><h4 className="font-bold mb-2">Outcome</h4><p className="text-gray-300">{project.outcome}</p></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="footer-bottom">
-                    <div class="footer-copyright">
-                        <p>&copy; <span id="currentYear"></span> The Codency. All rights reserved. Made with <i class="fas fa-heart"></i> and probably too much coffee.</p>
-                    </div>
-                    
-                    <div class="footer-legal">
-                        <a href="#">Privacy Policy</a>
-                        <span>•</span>
-                        <a href="#">Terms of Service</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-    </div>
+                </motion.div>
+            );
+        };
 
-    <!-- Scripts -->
-    <script src="projects.js"></script>
-    <script src="script.js"></script>
+        const ProjectsPage = () => {
+            const [selectedCategory, setSelectedCategory] = useState("All");
+            const [selectedProject, setSelectedProject] = useState(null);
+
+            // Filtering logic
+            const filteredProjects = useMemo(() => {
+                if (selectedCategory === "All") return PROJECTS;
+                return PROJECTS.filter(p => p.category === selectedCategory);
+            }, [selectedCategory]);
+
+            // Scroll Progress
+            const { scrollYProgress } = useScroll();
+            const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+            return (
+                <div className="relative bg-[#f4f4f5] min-h-screen text-brand-black selection:bg-black selection:text-white pb-20">
+                    <Cursor />
+                    <motion.div className="fixed top-0 left-0 right-0 h-1 bg-brand-black origin-left z-50" style={{ scaleX }} />
+
+                    {/* Navigation */}
+                    <nav className="fixed top-0 w-full p-6 flex justify-between items-center z-40 mix-blend-difference text-white">
+                        <a href="index.html" className="font-bold tracking-widest text-lg md:text-xl">CODENCY.</a>
+                        <div className="hidden md:flex gap-8 text-sm font-medium">
+                            <a href="index.html#services" className="hover:opacity-50 transition-opacity">Services</a>
+                            <a href="projects.html" className="opacity-100 border-b border-white">Work</a>
+                            <a href="index.html#about" className="hover:opacity-50 transition-opacity">About</a>
+                        </div>
+                        <a href="index.html#contact" className="px-5 py-2 border border-white/30 rounded-full text-xs hover:bg-white hover:text-black transition-colors">Let's Talk</a>
+                    </nav>
+
+                    {/* Header */}
+                    <div className="pt-40 px-6 md:px-20 pb-12">
+                        <motion.h1 
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            transition={{ duration: 0.8 }}
+                            className="text-6xl md:text-9xl font-bold tracking-tighter mb-6"
+                        >
+                            WORK.
+                        </motion.h1>
+                        <div className="flex flex-col md:flex-row justify-between items-end border-b border-gray-300 pb-8">
+                            <p className="text-xl md:text-2xl font-light text-gray-500 max-w-xl">
+                                We craft digital products that define industries. Here is a selection of our finest engineering.
+                            </p>
+                            
+                            {/* Filter Buttons */}
+                            <div className="flex flex-wrap gap-2 mt-6 md:mt-0">
+                                {CATEGORIES.map(cat => (
+                                    <button
+                                        key={cat}
+                                        onClick={() => setSelectedCategory(cat)}
+                                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
+                                            selectedCategory === cat 
+                                            ? "bg-brand-black text-white scale-105" 
+                                            : "bg-white text-gray-500 hover:bg-gray-200"
+                                        }`}
+                                    >
+                                        {cat}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Projects Grid */}
+                    <div className="px-6 md:px-20 min-h-[50vh]">
+                        <motion.div 
+                            layout
+                            className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-20"
+                        >
+                            <AnimatePresence mode="popLayout">
+                                {filteredProjects.map((project) => (
+                                    <motion.div
+                                        layout
+                                        key={project.id}
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.5 }}
+                                        className="group cursor-pointer"
+                                        onClick={() => setSelectedProject(project)}
+                                    >
+                                        <div className="image-hover-zoom rounded-xl overflow-hidden aspect-[4/3] relative">
+                                            <img src={project.thumbnail} alt={project.name} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                                                <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-300 shadow-lg">
+                                                    <span className="text-xs uppercase font-bold tracking-widest">View</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="mt-6 flex justify-between items-start">
+                                            <div>
+                                                <h3 className="text-3xl font-bold group-hover:text-gray-600 transition-colors">{project.name}</h3>
+                                                <p className="text-brand-accent text-sm font-medium mt-1 uppercase tracking-wider">{project.category}</p>
+                                            </div>
+                                            <div className="hidden md:block text-gray-400 font-serif italic">
+                                                {project.platform}
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </AnimatePresence>
+                        </motion.div>
+
+                        {filteredProjects.length === 0 && (
+                            <div className="py-20 text-center text-gray-400">
+                                <p>No projects found in this category.</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Simple Footer */}
+                    <footer className="mt-40 border-t border-gray-300 pt-12 px-6 md:px-20 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                        <div>&copy; 2025 The Codency.</div>
+                        <div className="flex gap-6 mt-4 md:mt-0">
+                            <Icons.Github className="hover:text-black cursor-pointer"/>
+                            <Icons.Twitter className="hover:text-black cursor-pointer"/>
+                        </div>
+                    </footer>
+
+                    {/* Modal */}
+                    <AnimatePresence>
+                        {selectedProject && (
+                            <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+                        )}
+                    </AnimatePresence>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<ProjectsPage />);
+    </script>
 </body>
 </html>

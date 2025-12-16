@@ -3,517 +3,610 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Codency | Building Digital Excellence</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico">
+    <title>The Codency | Architecting the Digital Unimagined</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Manrope', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        brand: {
+                            black: '#0a0a0a',
+                            dark: '#1c1c1c',
+                            gray: '#888888',
+                            light: '#f4f4f5',
+                            white: '#ffffff',
+                            accent: '#4f46e5'
+                        }
+                    },
+                    animation: {
+                        'spin-slow': 'spin 12s linear infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f4f4f5; }
+        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+        body { background-color: #f4f4f5; cursor: default; }
+        html { scroll-behavior: smooth; }
+        .image-hover-zoom { overflow: hidden; }
+        .image-hover-zoom img { transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .image-hover-zoom:hover img { transform: scale(1.05); }
+    </style>
 </head>
 <body>
-    
-    <!-- Particle Background -->
-    <div class="particles-container"></div>
+    <div id="root"></div>
 
-    <div data-scroll-container>
-    
-    <!-- Navigation -->
-    <nav class="nav" id="nav">
-        <div class="container">
-            <div class="nav-inner">
-                <a href="#" class="logo">
-                    <div class="logo-mark">C</div>
-                    <div class="logo-text">
-                        <span class="logo-main">The Codency</span>
-                        <span class="logo-sub">Digital Architects</span>
-                    </div>
-                </a>
-                
-                <div class="nav-menu">
-                    <ul class="nav-list">
-                        <li class="nav-item"><a href="#home" class="nav-link" data-scroll>Home</a></li>
-                        <li class="nav-item"><a href="#about" class="nav-link" data-scroll>Our Story</a></li>
-                        <li class="nav-item"><a href="#services" class="nav-link" data-scroll>Expertise</a></li>
-                        <li class="nav-item"><a href="#work" class="nav-link" data-scroll>Spotlight</a></li>
-                        <li class="nav-item"><a href="projects.html" class="nav-link">Portfolio</a></li>
-                        <li class="nav-item"><a href="#contact" class="nav-link" data-scroll>Connect</a></li>
-                    </ul>
-                    
-                    <div class="nav-actions">
-                        <a href="#contact" class="btn btn-primary btn-small">Start Project</a>
-                        <div class="theme-toggle">
-                            <i class="fas fa-sun"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <button class="nav-toggle" id="navToggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </div>
-    </nav>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { motion, useScroll, useSpring, AnimatePresence } = window.Motion;
 
-    <!-- Hero Section -->
-    <section class="hero" id="home" data-scroll-section>
-        <div class="hero-background" data-scroll data-scroll-speed="-3"></div>
+        // --- ICON SYSTEM (FIXED) ---
+        // Native SVG components to avoid CDN "Object/Array" rendering errors
+        const Icon = ({ children, size = 24, className = "" }) => (
+            <svg 
+                width={size} 
+                height={size} 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={className}
+            >
+                {children}
+            </svg>
+        );
+
+        const Icons = {
+            ArrowRight: (props) => <Icon {...props}><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></Icon>,
+            ArrowUpRight: (props) => <Icon {...props}><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></Icon>,
+            X: (props) => <Icon {...props}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></Icon>,
+            Code: (props) => <Icon {...props}><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></Icon>,
+            Smartphone: (props) => <Icon {...props}><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></Icon>,
+            Database: (props) => <Icon {...props}><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s 9-1.34 9-3V5"></path></Icon>,
+            Zap: (props) => <Icon {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></Icon>,
+            Github: (props) => <Icon {...props}><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></Icon>,
+            Twitter: (props) => <Icon {...props}><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></Icon>,
+            Mail: (props) => <Icon {...props}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></Icon>
+        };
+
+        // --- DATA ---
         
-        <div class="container">
-            <div class="hero-content" data-scroll data-scroll-speed="1">
-                <div class="hero-badge">
-                    <span>Est. 2023</span>
-                </div>
-                
-                <h1 class="hero-title">
-                    <span class="line" data-scroll data-scroll-delay="0.1">Where</span>
-                    <span class="line" data-scroll data-scroll-delay="0.2">Digital Dreams</span>
-                    <span class="line" data-scroll data-scroll-delay="0.3">Become</span>
-                    <span class="line highlight" data-scroll data-scroll-delay="0.4">Extraordinary Reality</span>
-                </h1>
-                
-                <p class="hero-subtitle" data-scroll data-scroll-delay="0.5">
-                    We're not just developers; we're digital architects crafting premium experiences that make the internet a little more wonderful.
-                </p>
-                
-                <div class="hero-actions" data-scroll data-scroll-delay="0.6">
-                    <a href="#work" class="btn btn-primary btn-large" data-scroll>
-                        <span>Explore Our Work</span>
-                        <i class="fas fa-arrow-down"></i>
-                    </a>
-                    <a href="#contact" class="btn btn-secondary btn-large" data-scroll>
-                        <span>Start a Conversation</span>
-                        <i class="fas fa-comment"></i>
-                    </a>
-                </div>
-                
-                <div class="hero-scroll" data-scroll data-scroll-delay="0.7">
-                    <span>Scroll to discover</span>
-                    <div class="scroll-indicator">
-                        <div class="scroll-dot"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="hero-decoration">
-            <div class="decoration-item" data-scroll data-scroll-speed="2"></div>
-            <div class="decoration-item" data-scroll data-scroll-speed="1.5"></div>
-            <div class="decoration-item" data-scroll data-scroll-speed="2.5"></div>
-        </div>
-    </section>
+        const PROJECTS = [
+            {
+                id: 1,
+                name: "Velox Finance",
+                industry: "FinTech",
+                platform: "Web Application",
+                year: "2024",
+                thumbnail: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop",
+                description: "A high-frequency trading dashboard redesign focusing on data visualization speed and cognitive load reduction.",
+                problem: "The client's previous dashboard had a 400ms lag in data rendering, costing traders millions.",
+                solution: "We rebuilt the rendering engine using WebGL and optimized React concurrency.",
+                outcome: "Reduced latency to <16ms. User retention up by 40%.",
+                tech: ["React", "WebGL", "Node.js", "Socket.io"]
+            },
+            {
+                id: 2,
+                name: "Aura Health",
+                industry: "Healthcare",
+                platform: "Android / iOS",
+                year: "2023",
+                thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop",
+                description: "An AI-driven wellness companion that adapts to user biometrics in real-time.",
+                problem: "Users found existing apps too generic and disconnected from their actual physical state.",
+                solution: "Integrated wearable API data to generate custom health plans dynamically.",
+                outcome: "Featured in 'App of the Day'. 500k downloads in Q1.",
+                tech: ["Flutter", "Python AI", "Firebase", "HealthKit"]
+            },
+            {
+                id: 3,
+                name: "Nexus Supply",
+                industry: "Logistics",
+                platform: "Software System",
+                year: "2025",
+                thumbnail: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop",
+                description: "Enterprise-grade supply chain management software with predictive stock analysis.",
+                problem: "Global supply chain fragmentation led to 15% stock wastage.",
+                solution: "Created a unified ledger system with predictive ML models.",
+                outcome: "Wastage cut to 2%. Adopted by 3 Fortune 500 companies.",
+                tech: ["Next.js", "PostgreSQL", "Docker", "AWS"]
+            },
+            {
+                id: 4,
+                name: "Lumina Art",
+                industry: "E-Commerce",
+                platform: "Web Experience",
+                year: "2024",
+                thumbnail: "https://images.unsplash.com/photo-1507643179173-617d6a7982a2?q=80&w=1976&auto=format&fit=crop",
+                description: "An immersive gallery experience for buying high-end digital art.",
+                problem: "Buying art online felt transactional and flat.",
+                solution: "Built a 3D virtual gallery experience directly in the browser.",
+                outcome: "Average order value increased by 200%.",
+                tech: ["Three.js", "React Three Fiber", "Stripe", "Sanity CMS"]
+            }
+        ];
 
-    <!-- About Section -->
-    <section class="section about" id="about" data-scroll-section>
-        <div class="container">
-            <div class="section-header" data-scroll data-scroll-speed="0.5">
-                <h6 class="section-label">Our Origin Story</h6>
-                <h2 class="section-title">Two Developers, One Big Dream</h2>
-                <p class="section-subtitle">
-                    Once upon a time, two developers met at a hackathon and decided the world needed more delightful digital experiences. So we built The Codency.
-                </p>
-            </div>
-            
-            <div class="about-content">
-                <div class="about-text" data-scroll data-scroll-speed="0.8">
-                    <h3>We Believe in Building with Joy</h3>
-                    <p>At The Codency, we approach every project with a mix of technical excellence and creative playfulness. We're serious about quality but not about taking ourselves too seriously.</p>
-                    
-                    <div class="stats">
-                        <div class="stat-item">
-                            <div class="stat-number" data-count="27">0</div>
-                            <div class="stat-label">Projects Delivered</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" data-count="18">0</div>
-                            <div class="stat-label">Happy Clients</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number" data-count="2">0</div>
-                            <div class="stat-label">Coffee Enthusiasts</div>
-                        </div>
-                    </div>
-                    
-                    <div class="about-quote">
-                        <p>"We don't just write code; we craft digital experiences that make people smile."</p>
-                        <div class="quote-author">— The Codency Team</div>
-                    </div>
-                </div>
-                
-                <div class="about-visual" data-scroll data-scroll-speed="0.3">
-                    <div class="floating-card card-1">
-                        <div class="card-icon">
-                            <i class="fas fa-lightbulb"></i>
-                        </div>
-                        <h4>Innovate</h4>
-                        <p>We push boundaries with creative solutions</p>
-                    </div>
-                    
-                    <div class="floating-card card-2">
-                        <div class="card-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <h4>Delight</h4>
-                        <p>We create experiences users love</p>
-                    </div>
-                    
-                    <div class="floating-card card-3">
-                        <div class="card-icon">
-                            <i class="fas fa-rocket"></i>
-                        </div>
-                        <h4>Elevate</h4>
-                        <p>We help businesses reach new heights</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        const SERVICES = [
+            { title: "Website Development", desc: "Immersive frontends. Robust backends.", icon: <Icons.Code size={24}/> },
+            { title: "Mobile Ecosystems", desc: "Native performance. Fluid motion.", icon: <Icons.Smartphone size={24}/> },
+            { title: "Software Architecture", desc: "Scalable systems for enterprise.", icon: <Icons.Database size={24}/> },
+            { title: "IT Consulting", desc: "Strategic digital transformation.", icon: <Icons.Zap size={24}/> }
+        ];
 
-    <!-- Services Section -->
-    <section class="section services" id="services" data-scroll-section>
-        <div class="services-background"></div>
-        
-        <div class="container">
-            <div class="section-header" data-scroll data-scroll-speed="0.5">
-                <h6 class="section-label">Our Superpowers</h6>
-                <h2 class="section-title">What We're Amazing At</h2>
-                <p class="section-subtitle">
-                    From pixels to production, we've got the skills to make your digital dreams come true (and then some).
-                </p>
-            </div>
-            
-            <div class="services-grid">
-                <div class="service-card" data-scroll data-scroll-speed="0.8">
-                    <div class="service-number">01</div>
-                    <div class="service-icon">
-                        <i class="fas fa-laptop-code"></i>
-                    </div>
-                    <h3>Web Wizardry</h3>
-                    <p>We build websites so smooth, visitors might just stick around for the scrolling experience alone.</p>
-                    <ul class="service-features">
-                        <li>Interactive Experiences</li>
-                        <li>Blazing Fast Performance</li>
-                        <li>Pixel-Perfect Design</li>
-                    </ul>
-                    <div class="service-cta">
-                        <a href="#contact" class="btn-link">Cast a spell <i class="fas fa-magic"></i></a>
-                    </div>
-                </div>
-                
-                <div class="service-card" data-scroll data-scroll-speed="0.6">
-                    <div class="service-number">02</div>
-                    <div class="service-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>App Alchemy</h3>
-                    <p>Transforming ideas into apps that people actually want to use (and maybe even pay for).</p>
-                    <ul class="service-features">
-                        <li>iOS & Android Excellence</li>
-                        <li>Flutter Magic</li>
-                        <li>App Store Optimization</li>
-                    </ul>
-                    <div class="service-cta">
-                        <a href="#contact" class="btn-link">Start transformation <i class="fas fa-flask"></i></a>
-                    </div>
-                </div>
-                
-                <div class="service-card" data-scroll data-scroll-speed="0.8">
-                    <div class="service-number">03</div>
-                    <div class="service-icon">
-                        <i class="fas fa-paint-brush"></i>
-                    </div>
-                    <h3>Design Sorcery</h3>
-                    <p>Creating interfaces so beautiful, users might forget they're actually here to get stuff done.</p>
-                    <ul class="service-features">
-                        <li>UI/UX That Wows</li>
-                        <li>Brand Storytelling</li>
-                        <li>Interactive Prototypes</li>
-                    </ul>
-                    <div class="service-cta">
-                        <a href="#contact" class="btn-link">See the magic <i class="fas fa-palette"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        // --- COMPONENTS ---
 
-    <!-- Featured Work Section -->
-    <section class="section work" id="work" data-scroll-section>
-        <div class="container">
-            <div class="section-header" data-scroll data-scroll-speed="0.5">
-                <h6 class="section-label">Our Greatest Hits</h6>
-                <h2 class="section-title">Projects We're Pretty Proud Of</h2>
-                <p class="section-subtitle">
-                    A curated selection of our favorite work. Each project tells a story of collaboration, creativity, and code.
-                </p>
-            </div>
-            
-            <div class="featured-projects" id="featuredProjects">
-                <!-- Featured projects will be loaded from projects.js -->
-            </div>
-            
-            <div class="section-footer" data-scroll data-scroll-speed="0.5">
-                <a href="projects.html" class="btn btn-secondary btn-large">
-                    <span>View Full Portfolio</span>
-                    <i class="fas fa-arrow-right"></i>
-                </a>
-                <p class="view-all-note">See all <span id="projectCount">0</span> amazing projects in our portfolio</p>
-            </div>
-        </div>
-    </section>
+        const RevealText = ({ children, delay = 0, className = "" }) => {
+            return (
+                <div style={{ overflow: 'hidden' }} className={className}>
+                    <motion.div
+                        initial={{ y: "100%" }}
+                        whileInView={{ y: 0 }}
+                        transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94], delay }}
+                        viewport={{ once: true }}
+                    >
+                        {children}
+                    </motion.div>
+                </div>
+            );
+        };
 
-    <!-- Team Section -->
-    <section class="section team" id="team" data-scroll-section>
-        <div class="container">
-            <div class="section-header" data-scroll data-scroll-speed="0.5">
-                <h6 class="section-label">The Brains & Brawn</h6>
-                <h2 class="section-title">Meet Your Digital Architects</h2>
-                <p class="section-subtitle">
-                    We're the friendly faces behind the code. Don't let the technical skills fool you—we're actually pretty fun to work with.
-                </p>
-            </div>
-            
-            <div class="team-members">
-                <div class="team-member" data-scroll data-scroll-speed="0.8">
-                    <div class="member-visual">
-                        <div class="member-image">
-                            <div class="image-mask"></div>
-                            <div class="image-placeholder">
-                                <span>A</span>
-                            </div>
-                        </div>
-                        <div class="member-shape"></div>
-                    </div>
-                    <div class="member-info">
-                        <h3>Alex Morgan</h3>
-                        <p class="member-role">Chief Code Conjurer</p>
-                        <p class="member-bio">When I'm not turning coffee into code, I'm probably optimizing something that was already working fine. I believe in clean code, good documentation, and the occasional perfectly timed meme.</p>
-                        <div class="member-stats">
-                            <div class="stat">
-                                <div class="stat-value">8+</div>
-                                <div class="stat-label">Years Coding</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-value">∞</div>
-                                <div class="stat-label">Cups of Coffee</div>
-                            </div>
-                        </div>
-                        <div class="member-quote">
-                            "If it's worth building, it's worth building beautifully."
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="team-member" data-scroll data-scroll-speed="0.8">
-                    <div class="member-visual">
-                        <div class="member-image">
-                            <div class="image-mask"></div>
-                            <div class="image-placeholder">
-                                <span>J</span>
-                            </div>
-                        </div>
-                        <div class="member-shape"></div>
-                    </div>
-                    <div class="member-info">
-                        <h3>Jordan Lee</h3>
-                        <p class="member-role">Creative Visionary & Pixel Perfectionist</p>
-                        <p class="member-bio">I turn complex problems into elegant solutions that users actually enjoy using. My superpower is explaining tech to non-tech people without making their eyes glaze over.</p>
-                        <div class="member-stats">
-                            <div class="stat">
-                                <div class="stat-value">150+</div>
-                                <div class="stat-label">Designs Created</div>
-                            </div>
-                            <div class="stat">
-                                <div class="stat-value">100%</div>
-                                <div class="stat-label">Chance of Dad Jokes</div>
-                            </div>
-                        </div>
-                        <div class="member-quote">
-                            "Good design is like a joke—if you have to explain it, it's not working."
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        const Cursor = () => {
+            const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+            useEffect(() => {
+                const updateMousePosition = e => setMousePosition({ x: e.clientX, y: e.clientY });
+                window.addEventListener('mousemove', updateMousePosition);
+                return () => window.removeEventListener('mousemove', updateMousePosition);
+            }, []);
 
-    <!-- Contact Section -->
-    <section class="section contact" id="contact" data-scroll-section>
-        <div class="contact-background"></div>
-        
-        <div class="container">
-            <div class="contact-content">
-                <div class="contact-header" data-scroll data-scroll-speed="0.5">
-                    <h6 class="section-label">Ready to Create Magic?</h6>
-                    <h2 class="section-title">Let's Build Something Amazing Together</h2>
-                    <p class="section-subtitle">
-                        Have a project in mind? We'd love to hear about it. Even if you're not sure what you need yet—let's figure it out together over (virtual) coffee.
-                    </p>
-                </div>
-                
-                <div class="contact-grid">
-                    <div class="contact-info" data-scroll data-scroll-speed="0.8">
-                        <h3>Why Work With Us?</h3>
-                        
-                        <div class="contact-reasons">
-                            <div class="reason">
-                                <div class="reason-icon">
-                                    <i class="fas fa-bolt"></i>
+            return (
+                <motion.div
+                    className="fixed top-0 left-0 w-6 h-6 border border-brand-black rounded-full pointer-events-none z-[100] hidden md:block mix-blend-difference"
+                    animate={{ x: mousePosition.x - 12, y: mousePosition.y - 12 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 28 }}
+                />
+            );
+        };
+
+        const ProjectModal = ({ project, onClose }) => {
+            if (!project) return null;
+
+            return (
+                <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-50 bg-[#f4f4f5] overflow-y-auto"
+                >
+                    <button 
+                        onClick={onClose}
+                        className="fixed top-8 right-8 z-50 p-4 rounded-full bg-white shadow-lg hover:scale-110 transition-transform"
+                    >
+                        <Icons.X size={24} />
+                    </button>
+
+                    <motion.div 
+                        initial={{ scale: 1.1, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ duration: 0.8, ease: "circOut" }}
+                        className="w-full h-[60vh] relative overflow-hidden"
+                    >
+                        <img src={project.thumbnail} className="w-full h-full object-cover" alt={project.name} />
+                        <div className="absolute inset-0 bg-black/20"></div>
+                        <div className="absolute bottom-10 left-4 md:left-20 text-white">
+                            <h1 className="text-5xl md:text-8xl font-bold font-sans tracking-tighter">{project.name}</h1>
+                            <p className="text-xl md:text-2xl mt-2 font-light">{project.industry} — {project.year}</p>
+                        </div>
+                    </motion.div>
+
+                    <div className="max-w-5xl mx-auto px-6 py-20">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                            <div className="md:col-span-1">
+                                <h3 className="text-sm font-bold uppercase tracking-widest text-brand-gray mb-4">Technologies</h3>
+                                <div className="flex flex-wrap gap-2">
+                                    {project.tech.map(t => (
+                                        <span key={t} className="px-3 py-1 border border-brand-gray/30 rounded-full text-sm">{t}</span>
+                                    ))}
                                 </div>
-                                <div class="reason-text">
-                                    <h4>Fast & Flexible</h4>
-                                    <p>We move quickly without sacrificing quality</p>
+                                <div className="mt-12">
+                                    <h3 className="text-sm font-bold uppercase tracking-widest text-brand-gray mb-4">Platform</h3>
+                                    <p className="text-lg">{project.platform}</p>
                                 </div>
                             </div>
-                            
-                            <div class="reason">
-                                <div class="reason-icon">
-                                    <i class="fas fa-comments"></i>
+                            <div className="md:col-span-2 space-y-12">
+                                <div>
+                                    <h3 className="text-3xl font-bold mb-4">Overview</h3>
+                                    <p className="text-xl text-brand-dark leading-relaxed font-light">{project.description}</p>
                                 </div>
-                                <div class="reason-text">
-                                    <h4>Communication Pros</h4>
-                                    <p>We speak human, not just tech</p>
-                                </div>
-                            </div>
-                            
-                            <div class="reason">
-                                <div class="reason-icon">
-                                    <i class="fas fa-award"></i>
-                                </div>
-                                <div class="reason-text">
-                                    <h4>Quality Obsessed</h4>
-                                    <p>We sweat the details so you don't have to</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="bg-white p-8 rounded-none border-l-2 border-brand-black">
+                                        <h4 className="font-bold mb-2">The Problem</h4>
+                                        <p className="text-brand-gray">{project.problem}</p>
+                                    </div>
+                                    <div className="bg-brand-black text-white p-8 rounded-none border-l-2 border-brand-accent">
+                                        <h4 className="font-bold mb-2">The Outcome</h4>
+                                        <p className="text-gray-300">{project.outcome}</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="contact-details">
-                            <div class="contact-item">
-                                <div class="contact-icon">
-                                    <i class="fas fa-envelope"></i>
-                                </div>
-                                <div class="contact-text">
-                                    <h4>Say Hello</h4>
-                                    <a href="mailto:hello@thecodency.com">hello@thecodency.com</a>
-                                </div>
-                            </div>
-                            
-                            <div class="contact-item">
-                                <div class="contact-icon">
-                                    <i class="fas fa-map-marker-alt"></i>
-                                </div>
-                                <div class="contact-text">
-                                    <h4>Find Us</h4>
-                                    <p>Based in San Francisco, working worldwide</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="contact-form-container" data-scroll data-scroll-speed="0.6">
-                        <form id="contactForm" class="contact-form">
-                            <div class="form-group">
-                                <input type="text" id="name" placeholder="Your Name" required>
-                                <div class="input-line"></div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <input type="email" id="email" placeholder="Your Email" required>
-                                <div class="input-line"></div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <input type="text" id="company" placeholder="Company (optional)">
-                                <div class="input-line"></div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <select id="projectType" required>
-                                    <option value="" disabled selected>What's your project about?</option>
-                                    <option value="website">A new website</option>
-                                    <option value="app">A mobile app</option>
-                                    <option value="design">Design work</option>
-                                    <option value="other">Something else amazing</option>
-                                </select>
-                                <div class="input-line"></div>
-                            </div>
-                            
-                            <div class="form-group">
-                                <textarea id="message" rows="4" placeholder="Tell us about your idea... (the more details, the better!)" required></textarea>
-                                <div class="input-line"></div>
-                            </div>
-                            
-                            <button type="submit" class="btn btn-primary btn-large">
-                                <span>Send Message</span>
-                                <i class="fas fa-paper-plane"></i>
+                        <div className="mt-20 pt-20 border-t border-gray-200 text-center">
+                            <h2 className="text-3xl font-bold mb-8">Ready to build the next big thing?</h2>
+                            <button onClick={onClose} className="px-8 py-4 bg-brand-black text-white rounded-full hover:bg-brand-accent transition-colors">
+                                Back to Projects
                             </button>
-                        </form>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                </motion.div>
+            );
+        };
+        
+        // --- NEW ABOUT SECTION COMPONENT ---
+        const AboutSection = () => {
+            return (
+                <section id="about" className="py-32 px-6 md:px-20 bg-brand-light">
+                    <div className="mb-20 border-b border-gray-200 pb-8 flex justify-between items-end">
+                        <h2 className="text-4xl font-bold">The Studio</h2>
+                        <span className="hidden md:inline-block text-gray-400">03</span>
+                    </div>
 
-    <!-- Footer -->
-    <footer class="footer" data-scroll-section>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-main">
-                    <div class="footer-logo">
-                        <a href="#" class="logo">
-                            <div class="logo-mark">C</div>
-                            <div class="logo-text">
-                                <span class="logo-main">The Codency</span>
-                                <span class="logo-sub">Digital Architects</span>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-12">
+                        
+                        {/* Left Column: Mission and Story */}
+                        <div>
+                            <h3 className="text-sm font-bold uppercase tracking-widest text-brand-gray mb-4">Our Mission</h3>
+                            <RevealText>
+                                <p className="text-3xl md:text-5xl font-sans font-bold leading-tight tracking-tighter">
+                                    To bridge the gap between abstract design visions and meticulously engineered digital realities.
+                                </p>
+                            </RevealText>
+                            
+                            <motion.div
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.8, delay: 0.6 }}
+                                viewport={{ once: true }}
+                                className="mt-12 space-y-6"
+                            >
+                                <p className="text-lg text-gray-600">
+                                    Founded in 2021 by a collective of software architects and cinematic designers, The Codency was built on the belief that code should be invisible and results should be remarkable. We maintain a small, focused team structure to ensure every pixel and every line of code is held to the highest standard of excellence.
+                                </p>
+                                <p className="text-lg text-gray-600">
+                                    We don't chase trends; we establish foundations. Our work is driven by first-principles thinking, leading to bespoke solutions that are robust, scalable, and inherently future-proof.
+                                </p>
+                            </motion.div>
+                        </div>
+
+                        {/* Right Column: Key Metrics / Milestones */}
+                        <div>
+                            <h3 className="text-sm font-bold uppercase tracking-widest text-brand-gray mb-6">Milestones & Culture</h3>
+                            
+                            <div className="space-y-8">
+                                
+                                {/* Milestone Item 1 */}
+                                <motion.div
+                                    initial={{ x: 50, opacity: 0 }}
+                                    whileInView={{ x: 0, opacity: 1 }}
+                                    transition={{ duration: 0.5, delay: 0.1 }}
+                                    viewport={{ once: true }}
+                                    className="border-b border-gray-200 pb-8"
+                                >
+                                    <h4 className="text-5xl font-bold text-brand-black mb-2">12+</h4>
+                                    <p className="text-lg text-gray-700">Years of combined team expertise across all major platforms.</p>
+                                </motion.div>
+
+                                {/* Milestone Item 2 */}
+                                <motion.div
+                                    initial={{ x: 50, opacity: 0 }}
+                                    whileInView={{ x: 0, opacity: 1 }}
+                                    transition={{ duration: 0.5, delay: 0.2 }}
+                                    viewport={{ once: true }}
+                                    className="border-b border-gray-200 pb-8"
+                                >
+                                    <h4 className="text-5xl font-bold text-brand-black mb-2">3</h4>
+                                    <p className="text-lg text-gray-700">Exclusive client engagements taken on per quarter to maintain focus.</p>
+                                </motion.div>
+                                
+                                {/* Milestone Item 3 */}
+                                <motion.div
+                                    initial={{ x: 50, opacity: 0 }}
+                                    whileInView={{ x: 0, opacity: 1 }}
+                                    transition={{ duration: 0.5, delay: 0.3 }}
+                                    viewport={{ once: true }}
+                                    className="border-b border-gray-200 pb-8"
+                                >
+                                    <h4 className="text-5xl font-bold text-brand-black mb-2">99.9%</h4>
+                                    <p className="text-lg text-gray-700">Uptime record for mission-critical client deployments.</p>
+                                </motion.div>
                             </div>
-                        </a>
-                        <p class="footer-tagline">Building digital experiences that make people smile (and businesses grow).</p>
+
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                transition={{ duration: 0.5, delay: 0.4 }}
+                                viewport={{ once: true }}
+                                className="mt-12 pt-8 border-t border-gray-200"
+                            >
+                                <a href="projects.html" className="inline-flex items-center gap-2 text-lg font-bold border-b-2 border-brand-accent text-brand-accent pb-1 hover:text-brand-black hover:border-brand-black transition-all">
+                                    Explore Our Process <Icons.ArrowRight size={20}/>
+                                </a>
+                            </motion.div>
+                        </div>
+
                     </div>
-                    
-                    <div class="footer-nav">
-                        <div class="footer-column">
-                            <h4>Explore</h4>
-                            <ul>
-                                <li><a href="#home" data-scroll>Home</a></li>
-                                <li><a href="#about" data-scroll>Our Story</a></li>
-                                <li><a href="#services" data-scroll>Expertise</a></li>
-                                <li><a href="#work" data-scroll>Spotlight</a></li>
-                                <li><a href="projects.html">Portfolio</a></li>
-                            </ul>
+                </section>
+            );
+        };
+        // --- END NEW ABOUT SECTION COMPONENT ---
+
+        const App = () => {
+            const [selectedProject, setSelectedProject] = useState(null);
+            const [loading, setLoading] = useState(true);
+
+            useEffect(() => {
+                setTimeout(() => setLoading(false), 2000);
+            }, []);
+
+            const { scrollYProgress } = useScroll();
+            const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
+
+            if (loading) {
+                return (
+                    <div className="h-screen w-full flex items-center justify-center bg-brand-light">
+                        <motion.div 
+                            initial={{ opacity: 0 }} 
+                            animate={{ opacity: 1 }} 
+                            className="flex flex-col items-center"
+                        >
+                            <div className="text-2xl font-bold tracking-[0.3em] font-sans">THE CODENCY</div>
+                            <motion.div 
+                                className="w-12 h-0.5 bg-black mt-4"
+                                initial={{ width: 0 }}
+                                animate={{ width: 48 }}
+                                transition={{ duration: 1.5, ease: "easeInOut" }}
+                            />
+                        </motion.div>
+                    </div>
+                );
+            }
+
+            return (
+                <div className="relative bg-[#f4f4f5] text-brand-black selection:bg-black selection:text-white">
+                    <Cursor />
+                    <motion.div className="fixed top-0 left-0 right-0 h-1 bg-brand-black origin-left z-50" style={{ scaleX }} />
+
+                    <nav className="fixed top-0 w-full p-6 flex justify-between items-center z-40 mix-blend-difference text-white">
+                        <div className="font-bold tracking-widest text-lg md:text-xl">CODENCY.</div>
+                        <div className="hidden md:flex gap-8 text-sm font-medium">
+                            <a href="#services" className="hover:opacity-50 transition-opacity">Services</a>
+                            <a href="projects.html" className="hover:opacity-50 transition-opacity">Work</a>
+                            <a href="#about" className="hover:opacity-50 transition-opacity">About</a>
+                        </div>
+                        <a href="#contact" className="px-5 py-2 border border-white/30 rounded-full text-xs hover:bg-white hover:text-black transition-colors">Let's Talk</a>
+                    </nav>
+
+                    <header className="min-h-screen flex flex-col justify-center px-6 md:px-20 pt-20 relative overflow-hidden">
+                        <div className="absolute top-1/4 right-[-10%] w-[50vw] h-[50vw] bg-gradient-to-b from-blue-200 to-transparent rounded-full blur-[120px] opacity-30 pointer-events-none" />
+                        
+                        <div className="space-y-2 relative z-10">
+                            <RevealText>
+                                <h1 className="text-6xl md:text-[8vw] leading-[0.9] font-bold tracking-tighter">
+                                    ARCHITECTING
+                                </h1>
+                            </RevealText>
+                            <RevealText delay={0.1}>
+                                <h1 className="text-6xl md:text-[8vw] leading-[0.9] font-bold tracking-tighter text-gray-400">
+                                    THE DIGITAL
+                                </h1>
+                            </RevealText>
+                            <RevealText delay={0.2}>
+                                <h1 className="text-6xl md:text-[8vw] leading-[0.9] font-bold tracking-tighter">
+                                    UNIMAGINED.
+                                </h1>
+                            </RevealText>
+                        </div>
+
+                        <div className="mt-12 md:mt-20 flex flex-col md:flex-row justify-between items-end">
+                            <div className="max-w-md">
+                                <RevealText delay={0.4}>
+                                    <p className="text-lg md:text-xl font-light leading-relaxed">
+                                        We are a premium digital technology firm blending cinematic aesthetics with engineering precision.
+                                    </p>
+                                </RevealText>
+                            </div>
+                            <RevealText delay={0.5}>
+                                <div className="animate-bounce mt-10 md:mt-0">
+                                    <span className="text-xs uppercase tracking-widest opacity-50">Scroll to explore</span>
+                                </div>
+                            </RevealText>
+                        </div>
+                    </header>
+
+                    <section id="services" className="py-32 px-6 md:px-20 bg-white rounded-t-[3rem] relative z-10">
+                        <div className="mb-20 border-b border-gray-200 pb-8 flex justify-between items-end">
+                            <h2 className="text-4xl font-bold">Expertise</h2>
+                            <span className="hidden md:inline-block text-gray-400">01</span>
                         </div>
                         
-                        <div class="footer-column">
-                            <h4>Connect</h4>
-                            <ul>
-                                <li><a href="#contact" data-scroll>Start a Project</a></li>
-                                <li><a href="mailto:hello@thecodency.com">Email Us</a></li>
-                                <li><a href="#">LinkedIn</a></li>
-                                <li><a href="#">Twitter</a></li>
-                                <li><a href="#">Instagram</a></li>
-                            </ul>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {SERVICES.map((service, idx) => (
+                                <motion.div 
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 50 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: idx * 0.1, duration: 0.6 }}
+                                    viewport={{ once: true }}
+                                    className="group p-8 border border-gray-100 rounded-2xl hover:bg-[#f4f4f5] hover:shadow-xl transition-all duration-300 cursor-pointer"
+                                >
+                                    <div className="mb-6 p-4 bg-white rounded-full w-fit shadow-sm group-hover:scale-110 transition-transform">
+                                        {service.icon}
+                                    </div>
+                                    <h3 className="text-xl font-bold mb-2">{service.title}</h3>
+                                    <p className="text-gray-500 font-light text-sm">{service.desc}</p>
+                                </motion.div>
+                            ))}
                         </div>
-                    </div>
-                </div>
-                
-                <div class="footer-bottom">
-                    <div class="footer-copyright">
-                        <p>&copy; <span id="currentYear"></span> The Codency. All rights reserved. Made with <i class="fas fa-heart"></i> and probably too much coffee.</p>
-                    </div>
-                    
-                    <div class="footer-legal">
-                        <a href="#">Privacy Policy</a>
-                        <span>•</span>
-                        <a href="#">Terms of Service</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-    </div>
+                    </section>
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/locomotive-scroll@4.1.4/dist/locomotive-scroll.min.js"></script>
-    <script src="projects.js"></script>
-    <script src="script.js"></script>
+                    <section id="work" className="py-32 px-6 md:px-20 bg-[#f4f4f5]">
+                        <div className="mb-20 flex flex-col md:flex-row justify-between items-end">
+                            <h2 className="text-5xl md:text-7xl font-bold tracking-tighter">Selected Work</h2>
+                            <p className="text-gray-500 mt-4 md:mt-0 max-w-sm text-right">
+                                A curation of technical challenges turned into seamless experiences.
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24">
+                            {PROJECTS.map((project, idx) => (
+                                <div key={project.id} className={`${idx % 2 !== 0 ? 'md:mt-24' : ''}`}>
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.95 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true, margin: "-100px" }}
+                                        transition={{ duration: 0.6 }}
+                                        className="group cursor-pointer"
+                                        onClick={() => setSelectedProject(project)}
+                                    >
+                                        <div className="image-hover-zoom rounded-xl overflow-hidden aspect-[4/3] relative">
+                                            <img src={project.thumbnail} alt={project.name} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                                                <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center scale-0 group-hover:scale-100 transition-transform duration-300 shadow-lg">
+                                                    <span className="text-xs uppercase font-bold tracking-widest">View</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="mt-6 flex justify-between items-start">
+                                            <div>
+                                                <h3 className="text-2xl font-bold group-hover:text-gray-600 transition-colors">{project.name}</h3>
+                                                <p className="text-gray-400 text-sm mt-1">{project.industry} — {project.platform}</p>
+                                            </div>
+                                            <div className="p-2 border border-gray-300 rounded-full group-hover:border-black transition-colors">
+                                                <Icons.ArrowUpRight size={20} />
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="mt-32 text-center">
+                            <a href="projects.html" className="inline-flex items-center gap-2 text-lg font-bold border-b-2 border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition-all">
+                                View Full Archive <Icons.ArrowRight size={20}/>
+                            </a>
+                        </div>
+                    </section>
+
+                    <section className="py-32 px-6 md:px-20 bg-white">
+                        <div className="max-w-4xl mx-auto text-center">
+                            <h2 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-12">Client Perspectives</h2>
+                            <motion.div 
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                className="text-2xl md:text-4xl font-serif italic leading-relaxed"
+                            >
+                                "The Codency didn't just build our software; they redefined our entire user interaction model. The level of polish is unmatched in the industry."
+                            </motion.div>
+                            <div className="mt-8 flex items-center justify-center gap-4">
+                                <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
+                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop" className="w-full h-full object-cover"/>
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-sm">Marcus Chen</div>
+                                    <div className="text-xs text-gray-500">CTO, Velox Finance</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* --- INTEGRATED ABOUT SECTION --- */}
+                    <AboutSection />
+                    {/* --- END INTEGRATED ABOUT SECTION --- */}
+
+                    <footer id="contact" className="bg-brand-black text-brand-white py-32 px-6 md:px-20 relative overflow-hidden">
+                        <div className="max-w-4xl mx-auto relative z-10">
+                            <h2 className="text-6xl md:text-8xl font-bold tracking-tighter mb-12">Let's build <br/> something <span className="text-gray-600">remarkable.</span></h2>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                                <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
+                                    <div>
+                                        <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Your Name</label>
+                                        <input type="text" className="w-full bg-transparent border-b border-gray-700 py-4 text-xl focus:border-white focus:outline-none transition-colors" placeholder="John Doe" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Email Address</label>
+                                        <input type="email" className="w-full bg-transparent border-b border-gray-700 py-4 text-xl focus:border-white focus:outline-none transition-colors" placeholder="john@company.com" />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">The Idea</label>
+                                        <textarea rows="4" className="w-full bg-transparent border-b border-gray-700 py-4 text-xl focus:border-white focus:outline-none transition-colors resize-none" placeholder="Tell us about your project..."></textarea>
+                                    </div>
+                                    <button className="group flex items-center gap-4 text-xl font-bold mt-8 hover:text-gray-300 transition-colors">
+                                        Send It 
+                                        <span className="p-3 bg-white text-black rounded-full group-hover:scale-110 transition-transform"><Icons.ArrowRight size={20}/></span>
+                                    </button>
+                                </form>
+
+                                <div className="flex flex-col justify-between md:pl-20">
+                                    <div className="space-y-6">
+                                        <h3 className="text-sm font-bold uppercase tracking-widest text-gray-500">Contact</h3>
+                                        <p className="text-2xl hover:text-gray-400 transition-colors cursor-pointer">hello@thecodency.com</p>
+                                        <p className="text-2xl hover:text-gray-400 transition-colors cursor-pointer">+1 (555) 012-3456</p>
+                                    </div>
+                                    <div className="space-y-6 mt-12 md:mt-0">
+                                        <h3 className="text-sm font-bold uppercase tracking-widest text-gray-500">Socials</h3>
+                                        <div className="flex gap-6">
+                                            <a href="#" className="hover:text-white text-gray-500 transition-colors"><Icons.Github /></a>
+                                            <a href="#" className="hover:text-white text-gray-500 transition-colors"><Icons.Twitter /></a>
+                                            <a href="#" className="hover:text-white text-gray-500 transition-colors"><Icons.Mail /></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div className="mt-32 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between text-xs text-gray-600">
+                                <div>&copy; 2025 The Codency. All rights reserved.</div>
+                                <div className="flex gap-8 mt-4 md:mt-0">
+                                    <a href="#">Privacy Policy</a>
+                                    <a href="#">Terms of Service</a>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
+
+                    <AnimatePresence>
+                        {selectedProject && (
+                            <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />
+                        )}
+                    </AnimatePresence>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
 </body>
 </html>
