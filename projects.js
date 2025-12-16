@@ -10,7 +10,7 @@ const projects = [
         year: 2023,
         featured: true,
         thumbnail: "assets/projects/nexus-thumb.jpg",
-        video: "assets/projects/nexus-preview.mp4"
+        video: "https://www.pexels.com/download/video/34614793/"
     },
     {
         id: 2,
@@ -160,7 +160,7 @@ function loadFeaturedProjects() {
 
 // Load All Projects
 function loadAllProjects() {
-    const projectsContainer = document.getElementById('allProjectsGrid');
+    const projectsContainer = document.getElementById('projectsGrid');
     if (!projectsContainer) return;
     
     projects.forEach(project => {
@@ -225,7 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
         loadFeaturedProjects();
     }
     
-    if (document.getElementById('allProjectsGrid')) {
+    if (document.getElementById('projectsGrid')) {
         loadAllProjects();
     }
 });

@@ -1,16 +1,12 @@
-// Main JavaScript for The Codency - Premium Interactive Experience
 
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('The Codency - Initializing...');
+
+    document.body.style.overflow = '';
     
     // FIRST: Initialize scroll (most important)
     initLocomotiveScroll();
-    
-    // SECOND: Initialize cursor (after scroll)
-    setTimeout(() => {
-        initCustomCursor();
-    }, 100);
     
     // THIRD: Initialize other components
     initParticles();
@@ -38,7 +34,7 @@ function initLocomotiveScroll() {
         return;
     }
 
-    if (typeof LocomotiveScroll === 'undefined') {
+    if (typeof initLocomotiveScroll === 'undefined') {
         initNativeSmoothScroll();
         return;
     }
@@ -50,7 +46,13 @@ function initLocomotiveScroll() {
         return;
     }
 
-    const scroll = new LocomotiveScroll({
+    // Destroy existing instance safely
+    if (scrollInstance) {
+        scrollInstance.destroy();
+        scrollInstance = null;
+    }
+
+    scrollInstance = new LocomotiveScroll({
         el: scrollContainer,
         smooth: true,
         multiplier: 0.8,
@@ -59,10 +61,8 @@ function initLocomotiveScroll() {
         tablet: { smooth: false }
     });
 
-    window.addEventListener('resize', () => scroll.update());
-    window.addEventListener('load', () => setTimeout(() => scroll.update(), 500));
-
-    return scroll;
+    window.addEventListener('resize', () => scrollInstance.update());
+    window.addEventListener('load', () => setTimeout(() => scrollInstance.update(), 500));
 }
 
 
@@ -181,25 +181,22 @@ function initNavigation() {
     const navToggle = document.getElementById('navToggle');
     const navMenu = document.querySelector('.nav-menu');
     const navLinks = document.querySelectorAll('.nav-link');
-    
-    // Toggle mobile menu
-    navToggle.addEventListener('click', function() {
+
+    navToggle.addEventListener('click', function () {
         this.classList.toggle('active');
         navMenu.classList.toggle('active');
         document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
     });
-    
-    // Close mobile menu when clicking a link
+
     navLinks.forEach(link => {
-        link.addEventListener('click', function() {
+        link.addEventListener('click', function () {
             navToggle.classList.remove('active');
             navMenu.classList.remove('active');
             document.body.style.overflow = '';
         });
     });
-    
-    // Header scroll effect
-    window.addEventListener('scroll', function() {
+
+    window.addEventListener('scroll', function () {
         if (window.scrollY > 100) {
             nav.classList.add('scrolled');
         } else {
