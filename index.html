@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Codency | Architecting the Digital Unimagined</title>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-    
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -39,21 +42,50 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/framer-motion@10.16.4/dist/framer-motion.js"></script>
-    
+
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f4f4f5; }
-        ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
-        body { background-color: #f4f4f5; cursor: default; }
-        html { scroll-behavior: smooth; }
-        .image-hover-zoom { overflow: hidden; }
-        .image-hover-zoom img { transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        .image-hover-zoom:hover img { transform: scale(1.05); }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f4f4f5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d4d4d8;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a1a1aa;
+        }
+
+        body {
+            background-color: #f4f4f5;
+            cursor: default;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .image-hover-zoom {
+            overflow: hidden;
+        }
+
+        .image-hover-zoom img {
+            transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .image-hover-zoom:hover img {
+            transform: scale(1.05);
+        }
     </style>
 </head>
+
 <body>
     <div id="root"></div>
 
@@ -64,15 +96,15 @@
         // --- ICON SYSTEM (FIXED) ---
         // Native SVG components to avoid CDN "Object/Array" rendering errors
         const Icon = ({ children, size = 24, className = "" }) => (
-            <svg 
-                width={size} 
-                height={size} 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
+            <svg
+                width={size}
+                height={size}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
                 className={className}
             >
                 {children}
@@ -89,11 +121,25 @@
             Zap: (props) => <Icon {...props}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></Icon>,
             Github: (props) => <Icon {...props}><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></Icon>,
             Twitter: (props) => <Icon {...props}><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></Icon>,
-            Mail: (props) => <Icon {...props}><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></Icon>
+            Instagram: (props) => (
+                <Icon {...props}>
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </Icon>
+            ),
+            LinkedIn: (props) => (
+                <Icon {...props}>
+                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                    <rect x="2" y="9" width="4" height="12"></rect>
+                    <circle cx="4" cy="4" r="2"></circle>
+                </Icon>
+            )
+
         };
 
         // --- DATA ---
-        
+
         const PROJECTS = [
             {
                 id: 1,
@@ -110,16 +156,16 @@
             },
             {
                 id: 2,
-                name: "Aura Health",
+                name: "Examina",
                 industry: "Healthcare",
                 platform: "Android / iOS",
-                year: "2023",
+                year: "2024",
                 thumbnail: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?q=80&w=2070&auto=format&fit=crop",
                 description: "An AI-driven wellness companion that adapts to user biometrics in real-time.",
                 problem: "Users found existing apps too generic and disconnected from their actual physical state.",
                 solution: "Integrated wearable API data to generate custom health plans dynamically.",
                 outcome: "Featured in 'App of the Day'. 500k downloads in Q1.",
-                tech: ["Flutter", "Python AI", "Firebase", "HealthKit"]
+                tech: ["APIs", "Java", "Firebase"]
             },
             {
                 id: 3,
@@ -150,10 +196,10 @@
         ];
 
         const SERVICES = [
-            { title: "Website Development", desc: "Immersive frontends. Robust backends.", icon: <Icons.Code size={24}/> },
-            { title: "Mobile Ecosystems", desc: "Native performance. Fluid motion.", icon: <Icons.Smartphone size={24}/> },
-            { title: "Software Architecture", desc: "Scalable systems for enterprise.", icon: <Icons.Database size={24}/> },
-            { title: "IT Consulting", desc: "Strategic digital transformation.", icon: <Icons.Zap size={24}/> }
+            { title: "Website Development", desc: "Immersive frontends. Robust backends.", icon: <Icons.Code size={24} /> },
+            { title: "Mobile Ecosystems", desc: "Native performance. Fluid motion.", icon: <Icons.Smartphone size={24} /> },
+            { title: "Software Architecture", desc: "Scalable systems for enterprise.", icon: <Icons.Database size={24} /> },
+            { title: "IT Consulting", desc: "Strategic digital transformation.", icon: <Icons.Zap size={24} /> }
         ];
 
         // --- COMPONENTS ---
@@ -194,20 +240,20 @@
             if (!project) return null;
 
             return (
-                <motion.div 
+                <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
                     className="fixed inset-0 z-50 bg-[#f4f4f5] overflow-y-auto"
                 >
-                    <button 
+                    <button
                         onClick={onClose}
                         className="fixed top-8 right-8 z-50 p-4 rounded-full bg-white shadow-lg hover:scale-110 transition-transform"
                     >
                         <Icons.X size={24} />
                     </button>
 
-                    <motion.div 
+                    <motion.div
                         initial={{ scale: 1.1, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.8, ease: "circOut" }}
@@ -252,7 +298,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div className="mt-20 pt-20 border-t border-gray-200 text-center">
                             <h2 className="text-3xl font-bold mb-8">Ready to build the next big thing?</h2>
                             <button onClick={onClose} className="px-8 py-4 bg-brand-black text-white rounded-full hover:bg-brand-accent transition-colors">
@@ -263,7 +309,7 @@
                 </motion.div>
             );
         };
-        
+
         // --- NEW ABOUT SECTION COMPONENT ---
         const AboutSection = () => {
             return (
@@ -274,7 +320,7 @@
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-12">
-                        
+
                         {/* Left Column: Mission and Story */}
                         <div>
                             <h3 className="text-sm font-bold uppercase tracking-widest text-brand-gray mb-4">Our Mission</h3>
@@ -283,7 +329,7 @@
                                     To bridge the gap between abstract design visions and meticulously engineered digital realities.
                                 </p>
                             </RevealText>
-                            
+
                             <motion.div
                                 initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
@@ -303,9 +349,9 @@
                         {/* Right Column: Key Metrics / Milestones */}
                         <div>
                             <h3 className="text-sm font-bold uppercase tracking-widest text-brand-gray mb-6">Milestones & Culture</h3>
-                            
+
                             <div className="space-y-8">
-                                
+
                                 {/* Milestone Item 1 */}
                                 <motion.div
                                     initial={{ x: 50, opacity: 0 }}
@@ -314,22 +360,10 @@
                                     viewport={{ once: true }}
                                     className="border-b border-gray-200 pb-8"
                                 >
-                                    <h4 className="text-5xl font-bold text-brand-black mb-2">12+</h4>
+                                    <h4 className="text-5xl font-bold text-brand-black mb-2">2+</h4>
                                     <p className="text-lg text-gray-700">Years of combined team expertise across all major platforms.</p>
                                 </motion.div>
 
-                                {/* Milestone Item 2 */}
-                                <motion.div
-                                    initial={{ x: 50, opacity: 0 }}
-                                    whileInView={{ x: 0, opacity: 1 }}
-                                    transition={{ duration: 0.5, delay: 0.2 }}
-                                    viewport={{ once: true }}
-                                    className="border-b border-gray-200 pb-8"
-                                >
-                                    <h4 className="text-5xl font-bold text-brand-black mb-2">3</h4>
-                                    <p className="text-lg text-gray-700">Exclusive client engagements taken on per quarter to maintain focus.</p>
-                                </motion.div>
-                                
                                 {/* Milestone Item 3 */}
                                 <motion.div
                                     initial={{ x: 50, opacity: 0 }}
@@ -351,7 +385,7 @@
                                 className="mt-12 pt-8 border-t border-gray-200"
                             >
                                 <a href="projects.html" className="inline-flex items-center gap-2 text-lg font-bold border-b-2 border-brand-accent text-brand-accent pb-1 hover:text-brand-black hover:border-brand-black transition-all">
-                                    Explore Our Process <Icons.ArrowRight size={20}/>
+                                    Explore Our Process <Icons.ArrowRight size={20} />
                                 </a>
                             </motion.div>
                         </div>
@@ -376,13 +410,13 @@
             if (loading) {
                 return (
                     <div className="h-screen w-full flex items-center justify-center bg-brand-light">
-                        <motion.div 
-                            initial={{ opacity: 0 }} 
-                            animate={{ opacity: 1 }} 
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
                             className="flex flex-col items-center"
                         >
                             <div className="text-2xl font-bold tracking-[0.3em] font-sans">THE CODENCY</div>
-                            <motion.div 
+                            <motion.div
                                 className="w-12 h-0.5 bg-black mt-4"
                                 initial={{ width: 0 }}
                                 animate={{ width: 48 }}
@@ -410,7 +444,7 @@
 
                     <header className="min-h-screen flex flex-col justify-center px-6 md:px-20 pt-20 relative overflow-hidden">
                         <div className="absolute top-1/4 right-[-10%] w-[50vw] h-[50vw] bg-gradient-to-b from-blue-200 to-transparent rounded-full blur-[120px] opacity-30 pointer-events-none" />
-                        
+
                         <div className="space-y-2 relative z-10">
                             <RevealText>
                                 <h1 className="text-6xl md:text-[8vw] leading-[0.9] font-bold tracking-tighter">
@@ -450,10 +484,10 @@
                             <h2 className="text-4xl font-bold">Expertise</h2>
                             <span className="hidden md:inline-block text-gray-400">01</span>
                         </div>
-                        
+
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {SERVICES.map((service, idx) => (
-                                <motion.div 
+                                <motion.div
                                     key={idx}
                                     initial={{ opacity: 0, y: 50 }}
                                     whileInView={{ opacity: 1, y: 0 }}
@@ -514,30 +548,8 @@
 
                         <div className="mt-32 text-center">
                             <a href="projects.html" className="inline-flex items-center gap-2 text-lg font-bold border-b-2 border-black pb-1 hover:text-gray-600 hover:border-gray-600 transition-all">
-                                View Full Archive <Icons.ArrowRight size={20}/>
+                                View Full Archive <Icons.ArrowRight size={20} />
                             </a>
-                        </div>
-                    </section>
-
-                    <section className="py-32 px-6 md:px-20 bg-white">
-                        <div className="max-w-4xl mx-auto text-center">
-                            <h2 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-12">Client Perspectives</h2>
-                            <motion.div 
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                className="text-2xl md:text-4xl font-serif italic leading-relaxed"
-                            >
-                                "The Codency didn't just build our software; they redefined our entire user interaction model. The level of polish is unmatched in the industry."
-                            </motion.div>
-                            <div className="mt-8 flex items-center justify-center gap-4">
-                                <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden">
-                                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1000&auto=format&fit=crop" className="w-full h-full object-cover"/>
-                                </div>
-                                <div className="text-left">
-                                    <div className="font-bold text-sm">Marcus Chen</div>
-                                    <div className="text-xs text-gray-500">CTO, Velox Finance</div>
-                                </div>
-                            </div>
                         </div>
                     </section>
 
@@ -547,8 +559,8 @@
 
                     <footer id="contact" className="bg-brand-black text-brand-white py-32 px-6 md:px-20 relative overflow-hidden">
                         <div className="max-w-4xl mx-auto relative z-10">
-                            <h2 className="text-6xl md:text-8xl font-bold tracking-tighter mb-12">Let's build <br/> something <span className="text-gray-600">remarkable.</span></h2>
-                            
+                            <h2 className="text-6xl md:text-8xl font-bold tracking-tighter mb-12">Let's build <br /> something <span className="text-gray-600">remarkable.</span></h2>
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                 <form className="space-y-8" onSubmit={(e) => e.preventDefault()}>
                                     <div>
@@ -564,28 +576,61 @@
                                         <textarea rows="4" className="w-full bg-transparent border-b border-gray-700 py-4 text-xl focus:border-white focus:outline-none transition-colors resize-none" placeholder="Tell us about your project..."></textarea>
                                     </div>
                                     <button className="group flex items-center gap-4 text-xl font-bold mt-8 hover:text-gray-300 transition-colors">
-                                        Send It 
-                                        <span className="p-3 bg-white text-black rounded-full group-hover:scale-110 transition-transform"><Icons.ArrowRight size={20}/></span>
+                                        Send It
+                                        <span className="p-3 bg-white text-black rounded-full group-hover:scale-110 transition-transform"><Icons.ArrowRight size={20} /></span>
                                     </button>
                                 </form>
 
                                 <div className="flex flex-col justify-between md:pl-20">
                                     <div className="space-y-6">
                                         <h3 className="text-sm font-bold uppercase tracking-widest text-gray-500">Contact</h3>
-                                        <p className="text-2xl hover:text-gray-400 transition-colors cursor-pointer">hello@thecodency.com</p>
-                                        <p className="text-2xl hover:text-gray-400 transition-colors cursor-pointer">+1 (555) 012-3456</p>
+                                        <p className="text-2xl hover:text-gray-400 transition-colors cursor-pointer">codencyindia@gmail.com</p>
+                                        <p className="text-2xl hover:text-gray-400 transition-colors cursor-pointer">+91 9648383818, 9653007175</p>
                                     </div>
                                     <div className="space-y-6 mt-12 md:mt-0">
                                         <h3 className="text-sm font-bold uppercase tracking-widest text-gray-500">Socials</h3>
                                         <div className="flex gap-6">
-                                            <a href="#" className="hover:text-white text-gray-500 transition-colors"><Icons.Github /></a>
-                                            <a href="#" className="hover:text-white text-gray-500 transition-colors"><Icons.Twitter /></a>
-                                            <a href="#" className="hover:text-white text-gray-500 transition-colors"><Icons.Mail /></a>
+                                            <a
+                                                href="https://github.com/codencytech?tab=repositories"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:text-white text-gray-500 transition-colors"
+                                            >
+                                                <Icons.Github />
+                                            </a>
+
+                                            <a
+                                                href="https://x.com/thecodency"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:text-white text-gray-500 transition-colors"
+                                            >
+                                                <Icons.Twitter />
+                                            </a>
+
+                                            <a
+                                                href="https://www.instagram.com/the_codency?igsh=MXBwbHZjMWttNjNidg=="
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:text-white text-gray-500 transition-colors"
+                                            >
+                                                <Icons.Instagram />
+                                            </a>
+
+                                            <a
+                                                href="https://www.linkedin.com/in/the-codency-86bb36370?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="hover:text-white text-gray-500 transition-colors"
+                                            >
+                                                <Icons.LinkedIn />
+                                            </a>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="mt-32 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between text-xs text-gray-600">
                                 <div>&copy; 2025 The Codency. All rights reserved.</div>
                                 <div className="flex gap-8 mt-4 md:mt-0">
@@ -609,4 +654,5 @@
         root.render(<App />);
     </script>
 </body>
+
 </html>
